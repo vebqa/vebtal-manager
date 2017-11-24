@@ -1,4 +1,4 @@
-package org.veba.roborest;
+package org.vebqa.vebtal;
 
 import java.util.HashMap;
 import java.util.Map;

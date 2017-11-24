@@ -1,4 +1,4 @@
-package org.veba.roborest.model;
+package org.vebqa.vebtal.model;
 
 public class Command {
 

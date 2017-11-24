@@ -1,4 +1,4 @@
-package org.veba.roborest;
+package org.vebqa.vebtal;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -37,7 +37,8 @@ public class RoboManager extends Application {
 	public void start(Stage primaryStage) throws Exception {
 
 		// application title
-		primaryStage.setTitle("RoboManager");
+		// TODO: I18N
+		primaryStage.setTitle("Test Adaption Manager");
 
 		// BorderPane zur Aufnahme der Tabs
 		BorderPane mainPane = new BorderPane();
@@ -45,7 +46,8 @@ public class RoboManager extends Application {
 
 		// Create help tab
 		Tab tabHelp = new Tab();
-		tabHelp.setText("Hilfe");
+		// TODO: I18N
+		tabHelp.setText("Help");
 		mainTabPane.getTabs().add(tabHelp);
 
 		mainPane.setCenter(mainTabPane);
@@ -58,12 +60,12 @@ public class RoboManager extends Application {
 		primaryStage.setScene(new Scene(mainPane, 1024, 800));
 		
 		// Plugins laden und ausfuehren
-		Iterator<RoboManagerPlugin> plugins = ServiceLoader.load(RoboManagerPlugin.class).iterator();
+		Iterator<TestAdaptionPlugin> plugins = ServiceLoader.load(TestAdaptionPlugin.class).iterator();
 		if (!plugins.hasNext()) {
 			writeToArea("No plugins found!");
 		}
 		while (plugins.hasNext()) {
-			RoboManagerPlugin robo = plugins.next();
+			TestAdaptionPlugin robo = plugins.next();
 			writeToArea("Plugin found: " + robo.getName());
 			try {
 				mainTabPane.getTabs().add(robo.startup());
@@ -111,9 +113,9 @@ public class RoboManager extends Application {
 	 * @param mainWindow
 	 */
 	private void shutdown(Stage mainWindow) {
-		Iterator<RoboManagerPlugin> plugins = ServiceLoader.load(RoboManagerPlugin.class).iterator();
+		Iterator<TestAdaptionPlugin> plugins = ServiceLoader.load(TestAdaptionPlugin.class).iterator();
 		while (plugins.hasNext()) {
-			RoboManagerPlugin robo = plugins.next();
+			TestAdaptionPlugin robo = plugins.next();
 			writeToArea("Shutdown plugin " + robo.getName());
 			try {
 				robo.shutdown();

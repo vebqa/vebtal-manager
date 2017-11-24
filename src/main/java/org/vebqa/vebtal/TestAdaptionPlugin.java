@@ -1,9 +1,9 @@
-package org.veba.roborest;
+package org.vebqa.vebtal;
 
 import javafx.scene.control.Tab;
 
 @SuppressWarnings("restriction")
-public interface RoboManagerPlugin {
+public interface TestAdaptionPlugin {
 
 	String getName();
 	

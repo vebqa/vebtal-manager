@@ -1,4 +1,4 @@
-package org.veba.roborest.logging;
+package org.vebqa.vebtal.logging;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

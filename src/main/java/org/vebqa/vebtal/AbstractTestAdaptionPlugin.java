@@ -1,9 +1,9 @@
-package org.veba.roborest;
+package org.vebqa.vebtal;
 
 import javafx.scene.control.Tab;
 
 @SuppressWarnings("restriction")
-public abstract class AbstractRoboManagerPlugin implements RoboManagerPlugin {
+public abstract class AbstractTestAdaptionPlugin implements TestAdaptionPlugin {
 
 	public Tab startup() {
 		throw new UnsupportedOperationException("startup not yet implemented.");

@@ -1,4 +1,4 @@
-package org.veba.roborest.model;
+package org.vebqa.vebtal.model;
 
 import javafx.beans.property.SimpleStringProperty;
 

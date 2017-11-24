@@ -1,4 +1,4 @@
-package org.veba.roborest.logging;
+package org.vebqa.vebtal.logging;
 
 import java.io.IOException;
 import java.util.HashMap;

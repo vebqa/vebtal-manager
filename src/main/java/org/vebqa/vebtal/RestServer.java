@@ -1,4 +1,4 @@
-package org.veba.roborest;
+package org.vebqa.vebtal;
 
 import java.nio.charset.Charset;
 import java.util.Iterator;
@@ -28,9 +28,9 @@ public class RestServer {
 		ResourceConfig config = new ResourceConfig();
 
 		// Plugins laden und ausfuehren
-		Iterator<RoboManagerPlugin> plugins = ServiceLoader.load(RoboManagerPlugin.class).iterator();
+		Iterator<TestAdaptionPlugin> plugins = ServiceLoader.load(TestAdaptionPlugin.class).iterator();
 		while (plugins.hasNext()) {
-			RoboManagerPlugin robo = plugins.next();
+			TestAdaptionPlugin robo = plugins.next();
 			try {
 				config.register(robo.getImplementation());
 			} catch (Exception e) {
