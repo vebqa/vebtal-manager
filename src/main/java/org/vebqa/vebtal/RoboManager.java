@@ -55,10 +55,10 @@ public class RoboManager extends Application {
 		// Log Area
 		/** Logs **/
 		mainPane.setBottom(this.textArea);
-		
+
 		// in stage einfuegen
 		primaryStage.setScene(new Scene(mainPane, 1024, 800));
-		
+
 		// Plugins laden und ausfuehren
 		Iterator<TestAdaptionPlugin> plugins = ServiceLoader.load(TestAdaptionPlugin.class).iterator();
 		if (!plugins.hasNext()) {
@@ -66,11 +66,15 @@ public class RoboManager extends Application {
 		}
 		while (plugins.hasNext()) {
 			TestAdaptionPlugin robo = plugins.next();
-			writeToArea("Plugin found: " + robo.getName());
-			try {
-				mainTabPane.getTabs().add(robo.startup());
-			} catch (Exception e) {
-				logger.error("Error while starting plugin: " + robo.getName(), e);
+			writeToArea("Plugin of type (" + robo.getType() + ") found: " + robo.getName());
+
+			// we will start adapter only at this point
+			if (robo.getType() == TestAdaptionType.ADAPTER) {
+				try {
+					mainTabPane.getTabs().add(robo.startup());
+				} catch (Exception e) {
+					logger.error("Error while starting plugin: " + robo.getName(), e);
+				}
 			}
 		}
 
@@ -88,7 +92,7 @@ public class RoboManager extends Application {
 		});
 
 		t.start();
-		
+
 		// anzeigen
 		primaryStage.show();
 
@@ -110,6 +114,7 @@ public class RoboManager extends Application {
 
 	/**
 	 * Shutdown application - call all plugins and tear down.
+	 * 
 	 * @param mainWindow
 	 */
 	private void shutdown(Stage mainWindow) {
@@ -130,11 +135,11 @@ public class RoboManager extends Application {
 			logger.error("Error while stopping application.", e);
 		}
 	}
-	
+
 	public static void addTab(Tab aTab) {
 		mainTabPane.getTabs().add(aTab);
 	}
-	
+
 	public static TextArea getLogArea() {
 		return textArea;
 	}
@@ -145,5 +150,5 @@ public class RoboManager extends Application {
 
 	public static void writeToArea(String someText) {
 		Platform.runLater(() -> textArea.appendText(someText + "\n"));
-	}	
+	}
 }

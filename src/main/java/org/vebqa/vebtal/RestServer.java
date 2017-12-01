@@ -17,30 +17,32 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class RestServer {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(RestServer.class);
-	
+
 	private Server apiServer;
-		
+
 	public boolean startServer() {
 		RoboManager.writeToArea("Default charset: " + Charset.defaultCharset());
-		
+
 		ResourceConfig config = new ResourceConfig();
 
-		// Plugins laden und ausfuehren
+		// Plugins (Adapter) laden und ausfuehren
 		Iterator<TestAdaptionPlugin> plugins = ServiceLoader.load(TestAdaptionPlugin.class).iterator();
 		while (plugins.hasNext()) {
 			TestAdaptionPlugin robo = plugins.next();
-			try {
-				config.register(robo.getImplementation());
-			} catch (Exception e) {
-				logger.error("Error while starting plugin: " + robo.getName(), e);
+			if (robo.getType() == TestAdaptionType.ADAPTER) {
+				try {
+					config.register(robo.getImplementation());
+				} catch (Exception e) {
+					logger.error("Error while starting plugin: " + robo.getName(), e);
+				}
 			}
 		}
-		
+
 		config.register(org.glassfish.jersey.moxy.json.MoxyJsonFeature.class);
 		config.register(CharsetResponseFilter.class);
-		
+
 		ServletHolder servlet = new ServletHolder(new ServletContainer(config));
 
 		apiServer = new Server(84);
@@ -55,10 +57,10 @@ public class RestServer {
 		} finally {
 			// apiServer.destroy();
 		}
-		
+
 		return true;
 	}
-	
+
 	public boolean restartServer() {
 		if (!apiServer.isRunning()) {
 			logger.info("RestServer not running!");
@@ -71,10 +73,10 @@ public class RestServer {
 		} catch (Exception e) {
 			logger.error("Error while restarting server.", e);
 		}
-		
+
 		return true;
 	}
-	
+
 	public boolean shutdownServer() {
 		if (apiServer.isStopped()) {
 			logger.info("rest server already stopped.");
@@ -90,7 +92,7 @@ public class RestServer {
 		logger.info("rest server shutdown successfully.");
 		return true;
 	}
-	
+
 	public boolean isStarted() {
 		return apiServer.isStarted();
 	}
