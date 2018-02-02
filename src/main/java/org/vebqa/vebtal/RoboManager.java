@@ -22,7 +22,7 @@ public class RoboManager extends Application {
 
 	private static final Logger logger = LoggerFactory.getLogger(RoboManager.class);
 
-	public static RestServer singleServer = new RestServer();
+	public static final RestServer singleServer = new RestServer();
 
 	private static TabPane mainTabPane = new TabPane();
 
@@ -134,6 +134,9 @@ public class RoboManager extends Application {
 		} catch (Exception e) {
 			logger.error("Error while stopping application.", e);
 		}
+		
+		// close this...
+		mainWindow.close();
 	}
 
 	public static void addTab(Tab aTab) {

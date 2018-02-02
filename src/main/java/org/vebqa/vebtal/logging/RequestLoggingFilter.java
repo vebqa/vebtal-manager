@@ -21,11 +21,11 @@ public class RequestLoggingFilter implements ContainerRequestFilter {
 	private static final Logger logger = LoggerFactory.getLogger(RequestLoggingFilter.class);
 
 	public void filter(ContainerRequestContext req) throws IOException {
-		logger.info(req.getMethod() + " -> " + req.getMediaType());
+		logger.info("{} -> {}", req.getMethod(), req.getMediaType());
 		Map<String, String> headers = prepareParameters(req.getHeaders());
 		Set<String> keys = headers.keySet();
 		for (String aKey : keys) {
-			logger.info(aKey + " -> " + headers.get(aKey));
+			logger.info("{} -> {}", aKey, headers.get(aKey));
 		}
 	}
 
