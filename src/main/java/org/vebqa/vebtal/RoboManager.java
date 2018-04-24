@@ -54,7 +54,7 @@ public class RoboManager extends Application {
 
 		// Log Area
 		/** Logs **/
-		mainPane.setBottom(this.textArea);
+		mainPane.setBottom(RoboManager.textArea);
 
 		// in stage einfuegen
 		primaryStage.setScene(new Scene(mainPane, 1024, 800));
@@ -128,7 +128,7 @@ public class RoboManager extends Application {
 				logger.error("Error while starting plugin: " + robo.getName(), e);
 			}
 		}
-		this.singleServer.shutdownServer();
+		RoboManager.singleServer.shutdownServer();
 		try {
 			stop();
 		} catch (Exception e) {

@@ -36,6 +36,8 @@ public class RestServer {
 					config.register(robo.getImplementation());
 				} catch (Exception e) {
 					logger.error("Error while starting plugin: " + robo.getName(), e);
+				} catch (NoSuchMethodError e) {
+					logger.error("Error while starting plugin: " + robo.getName(), e);
 				}
 			}
 		}
