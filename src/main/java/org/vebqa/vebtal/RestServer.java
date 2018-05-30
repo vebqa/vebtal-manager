@@ -1,26 +1,41 @@
 package org.vebqa.vebtal;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.ServiceLoader;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ErrorPageErrorHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.glassfish.jersey.message.internal.ReaderWriter;
 import org.glassfish.jersey.process.Inflector;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.server.model.Parameter;
 import org.glassfish.jersey.server.model.Resource;
 import org.glassfish.jersey.server.model.ResourceMethod;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vebqa.vebtal.logging.RequestLoggingFilter;
 import org.vebqa.vebtal.model.Response;
 
 /**
@@ -35,7 +50,7 @@ public class RestServer {
 
 	public boolean startServer() {
 		RoboManager.writeToArea("Default charset: " + Charset.defaultCharset());
-
+		
 		ResourceConfig config = new ResourceConfig();
 
 		// Plugins (Adapter) laden und ausfuehren
@@ -54,68 +69,79 @@ public class RestServer {
 				}
 			} else if ((robo.getType() == TestAdaptionType.ADAPTER) && (robo.getImplementation() == null)) {
 				logger.info("register new style: " + robo.getName());
+
 				// register new-style adapter
 				final Resource.Builder resourceBuilder = Resource.builder();
-		        // path is always the adaptionID
 				resourceBuilder.path(robo.getAdaptionID());
-		        
-				// method is always "post"
-		        final ResourceMethod.Builder methodBuilder = resourceBuilder.addMethod("POST");
-		        
-		        methodBuilder.consumes(MediaType.APPLICATION_JSON).produces(MediaType.APPLICATION_JSON).handledBy(new Inflector<ContainerRequestContext, Response>() {
-		        	@Override
-		        	public Response apply(ContainerRequestContext containerRequestContext) {
-		        		// we will call the specifiy resource, build with the adaptionId
-		        		String tClassname = robo.getAdaptionID().toLowerCase().trim();
-		        		// erster Buchstabe gross
-		        		String tFirst = tClassname.substring(0, 1).toUpperCase(); 
-		        		String tRest = tClassname.substring(1);
-		        		tClassname = tFirst + tRest;
-		        		String tClass = "org.vebqa.vebtal."+robo.getAdaptionID() + "restserver." + tClassname + "Resource";
-		        		Response result = null;
-		        		
-		        		try {
-		        			Class<?> cmdClass = Class.forName(tClass);
-		        			Constructor<?> cons = cmdClass.getConstructor();
-		        			Object cmdObj = cons.newInstance();
-		        			
-		        			Class[] argTypes = new Class[] { String.class, String.class, String.class };
-		        			Method m = cmdClass.getDeclaredMethod("execute", argTypes);
-		        			
-		        			MultivaluedMap<String, String> pathparam = containerRequestContext.getUriInfo().getPathParameters();
-		        			
-		        			result = (Response)m.invoke(cmdObj); //, pathparam.getFirst("cmd"), pathparam.getFirst("target"), pathparam.getFirst("value"));
-		        			
-		        		} catch (ClassNotFoundException e) {
-		        			logger.error("Keyword class not found.", e);
-		        		} catch (NoSuchMethodException e) {
-		        			logger.error("Method not found!", e);
-						} catch (SecurityException e) {
-							logger.error("Security exception!", e);
-						} catch (InstantiationException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (IllegalAccessException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (IllegalArgumentException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (InvocationTargetException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-		        		
-		        		return result;
-		        	}
-				});
-		        
-		        final Resource resource = resourceBuilder.build();
-		        config.register(resource);
+
+				resourceBuilder.addChildResource("execute").addMethod("POST").produces(MediaType.APPLICATION_JSON)
+						.consumes(MediaType.APPLICATION_JSON)
+						.handledBy(new Inflector<ContainerRequestContext, Response>() {
+
+							@Override
+							public Response apply(ContainerRequestContext request) {
+
+								logger.info("Media Type: " + request.getMediaType().toString());
+								logger.info("Entity: " + getEntityBody(request));
+								
+								MultivaluedMap<String, String> pathparam = request.getUriInfo()
+										.getQueryParameters();
+								
+								logger.info("pathparams size: " + pathparam.size());
+								
+								String queryParam = pathparam.keySet().stream().findFirst().get();
+								logger.info("QueryParam: " + queryParam);
+								
+								for (String key : pathparam.keySet()) {
+									logger.info("key: " + key);
+								}
+								
+								// we will call the specifiy resource, build with the adaptionId String
+								String tClassname = robo.getAdaptionID().toLowerCase().trim(); // erster Buchstabe
+								String tFirst = tClassname.substring(0, 1).toUpperCase();
+								String tRest = tClassname.substring(1);
+								tClassname = tFirst + tRest;
+								String tClass = "org.vebqa.vebtal." + robo.getAdaptionID() + "restserver." + tClassname
+										+ "Resource";
+								logger.info("call handler class: " + tClass);
+								Response result = null;
+								try {
+									Class<?> cmdClass = Class.forName(tClass);
+									TestAdaptionResource cmdObj = (TestAdaptionResource)cmdClass.newInstance();
+
+									Class[] argTypes = new Class[] { String.class, String.class, String.class };
+									Method m = cmdClass.getDeclaredMethod("execute", argTypes);
+
+											result = (Response) m.invoke(cmdObj, pathparam.getFirst("cmd"),
+											pathparam.getFirst("target"), pathparam.getFirst("value"));
+
+								} catch (ClassNotFoundException e) {
+									logger.error("Keyword class not found.", e);
+								} catch (NoSuchMethodException e) {
+									logger.error("Method not found!", e);
+								} catch (SecurityException e) {
+									logger.error("Security exception!", e);
+								} catch (InstantiationException e) {
+									logger.error("Instantiation error!", e);
+								} catch (IllegalAccessException e) {
+									logger.error("IllegalAccessException!", e);
+								} catch (IllegalArgumentException e) {
+									logger.error("IllegalArgumentException!", e);
+								} catch (InvocationTargetException e) {
+									logger.error("InvocationTargetException!", e);
+								}
+
+								return result;
+							}
+						});
+
+				final Resource resource = resourceBuilder.build();
+				config.registerResources(resource);
 			}
 		} // register adaption plugins
 
 		config.register(org.glassfish.jersey.moxy.json.MoxyJsonFeature.class);
+		config.register(RequestLoggingFilter.class);
 		config.register(CharsetResponseFilter.class);
 
 		ServletHolder servlet = new ServletHolder(new ServletContainer(config));
@@ -123,8 +149,10 @@ public class RestServer {
 		apiServer = new Server(84);
 		ServletContextHandler context = new ServletContextHandler(apiServer, "/*");
 		context.addServlet(servlet, "/*");
+		context.setErrorHandler(new ErrorHandler());
 
 		try {
+
 			apiServer.start();
 			apiServer.join();
 		} catch (Exception e) {
@@ -171,4 +199,47 @@ public class RestServer {
 	public boolean isStarted() {
 		return apiServer.isStarted();
 	}
+
+	private String getEntityBody(ContainerRequestContext requestContext)
+    {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        InputStream in = requestContext.getEntityStream();
+         
+        final StringBuilder b = new StringBuilder();
+        try
+        {
+            ReaderWriter.writeTo(in, out);
+ 
+            byte[] requestEntity = out.toByteArray();
+            if (requestEntity.length == 0)
+            {
+                b.append("").append("\n");
+            }
+            else
+            {
+                b.append(new String(requestEntity)).append("\n");
+            }
+            requestContext.setEntityStream( new ByteArrayInputStream(requestEntity) );
+ 
+        } catch (IOException ex) {
+            //Handle logging error
+        }
+        return b.toString();
+    }	
+	
+	static class ErrorHandler extends ErrorPageErrorHandler {
+		@Override
+		public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
+				throws IOException {
+			logger.error("HTTP ERROR: " + String.valueOf(response.getStatus()));
+
+			Response error = new Response();
+			error.setCode(String.valueOf(response.getStatus()));
+			error.setMessage("Error while processing reequest!");
+			JsonObject jsonError = Json.createObjectBuilder().add("code", String.valueOf(response.getStatus()))
+					.add("content", "Error while processing request!").build();
+			response.getWriter().append(jsonError.toString());
+		}
+	}
+	
 }

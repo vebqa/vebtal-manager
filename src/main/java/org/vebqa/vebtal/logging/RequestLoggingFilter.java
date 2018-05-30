@@ -20,6 +20,10 @@ public class RequestLoggingFilter implements ContainerRequestFilter {
 
 	private static final Logger logger = LoggerFactory.getLogger(RequestLoggingFilter.class);
 
+	public RequestLoggingFilter() {
+		logger.info("init RequestLogginFilter");
+	}
+	
 	public void filter(ContainerRequestContext req) throws IOException {
 		logger.info("{} -> {}", req.getMethod(), req.getMediaType());
 		Map<String, String> headers = prepareParameters(req.getHeaders());
