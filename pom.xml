@@ -9,9 +9,9 @@
 	<name>Manager GUI vebtal system</name>
 	<description>Service provider based gui for vebtal system</description>
 	<inceptionYear>2018</inceptionYear>
-	
+
 	<url>https://github.com/vebqa/vebtal-manager</url>
-	
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<version.jersey>2.27</version.jersey>
@@ -21,7 +21,7 @@
 		<version.jaxrs>2.1</version.jaxrs>
 		<version.junit>4.12</version.junit>
 	</properties>
-	
+
 	<organization>
 		<name>VON ESSEN Bank GmbH</name>
 		<url>https://www.vonessenbank.de/bom</url>
@@ -34,19 +34,19 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-	
+
 	<scm>
 		<url>https://github.com/vebqa/vebtal-api</url>
 	</scm>
-	
+
 	<developers>
 		<developer>
 			<name>Karsten Doerges</name>
 			<email>kdoerges@googlemail.com</email>
 		</developer>
 	</developers>
-	
-				<build>
+
+	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
 		<plugins>
@@ -108,7 +108,7 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.vebqa.vebtal</groupId>
