@@ -4,13 +4,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.ServiceLoader;
 
 import javax.json.Json;
@@ -19,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
@@ -29,14 +25,17 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.message.internal.ReaderWriter;
 import org.glassfish.jersey.process.Inflector;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.server.model.Parameter;
 import org.glassfish.jersey.server.model.Resource;
-import org.glassfish.jersey.server.model.ResourceMethod;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vebqa.vebtal.logging.RequestLoggingFilter;
+import org.vebqa.vebtal.model.Command;
 import org.vebqa.vebtal.model.Response;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Selenese REST API Service
@@ -82,18 +81,20 @@ public class RestServer {
 							public Response apply(ContainerRequestContext request) {
 
 								logger.info("Media Type: " + request.getMediaType().toString());
-								logger.info("Entity: " + getEntityBody(request));
+								String entity = getEntityBody(request);
+								logger.info("Entity: " + entity);
 								
-								MultivaluedMap<String, String> pathparam = request.getUriInfo()
-										.getQueryParameters();
-								
-								logger.info("pathparams size: " + pathparam.size());
-								
-								String queryParam = pathparam.keySet().stream().findFirst().get();
-								logger.info("QueryParam: " + queryParam);
-								
-								for (String key : pathparam.keySet()) {
-									logger.info("key: " + key);
+								// convert entity data to command object model
+								ObjectMapper mapper = new ObjectMapper();
+								Command cmd = null;
+								try {
+									cmd = mapper.readValue(entity, Command.class);
+								} catch (JsonParseException e) {
+									logger.error("Error while parsing entity stream to object!", e);
+								} catch (JsonMappingException e) {
+									logger.error("Error while parsing entity stream to object!", e);
+								} catch (IOException e) {
+									logger.error("Error while parsing entity stream to object!", e);
 								}
 								
 								// we will call the specifiy resource, build with the adaptionId String
@@ -109,11 +110,10 @@ public class RestServer {
 									Class<?> cmdClass = Class.forName(tClass);
 									TestAdaptionResource cmdObj = (TestAdaptionResource)cmdClass.newInstance();
 
-									Class[] argTypes = new Class[] { String.class, String.class, String.class };
+									Class[] argTypes = new Class[] { Command.class };
 									Method m = cmdClass.getDeclaredMethod("execute", argTypes);
 
-											result = (Response) m.invoke(cmdObj, pathparam.getFirst("cmd"),
-											pathparam.getFirst("target"), pathparam.getFirst("value"));
+									result = (Response) m.invoke(cmdObj, cmd);
 
 								} catch (ClassNotFoundException e) {
 									logger.error("Keyword class not found.", e);
@@ -221,8 +221,8 @@ public class RestServer {
             }
             requestContext.setEntityStream( new ByteArrayInputStream(requestEntity) );
  
-        } catch (IOException ex) {
-            //Handle logging error
+        } catch (IOException e) {
+            logger.error("IOException while reading entity from stream!", e);
         }
         return b.toString();
     }	
