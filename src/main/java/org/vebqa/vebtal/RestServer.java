@@ -116,7 +116,7 @@ public class RestServer {
 									result = (Response) m.invoke(cmdObj, cmd);
 
 								} catch (ClassNotFoundException e) {
-									logger.error("Keyword class not found.", e);
+									logger.error("Keyword class not found: " + tClass, e);
 								} catch (NoSuchMethodException e) {
 									logger.error("Method not found!", e);
 								} catch (SecurityException e) {
