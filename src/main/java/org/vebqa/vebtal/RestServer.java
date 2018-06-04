@@ -128,7 +128,7 @@ public class RestServer {
 								} catch (IllegalArgumentException e) {
 									logger.error("IllegalArgumentException!", e);
 								} catch (InvocationTargetException e) {
-									logger.error("InvocationTargetException!", e);
+									logger.error("There is an exception in the invoked object: ", e.getCause());
 								}
 
 								return result;
