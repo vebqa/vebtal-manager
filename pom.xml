@@ -2,7 +2,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.vebqa.vebtal</groupId>
+	<groupId>com.github.vebqa</groupId>
 	<artifactId>vebtal-manager</artifactId>
 	<version>0.9.1</version>
 
@@ -24,7 +24,7 @@
 
 	<organization>
 		<name>VON ESSEN Bank GmbH</name>
-		<url>https://www.vonessenbank.de/bom</url>
+		<url>https://www.vonessenbank.de</url>
 	</organization>
 
 	<licenses>
@@ -111,7 +111,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.vebqa.vebtal</groupId>
+			<groupId>com.github.vebqa</groupId>
 			<artifactId>vebtal-api</artifactId>
 			<version>0.9.1</version>
 		</dependency>
