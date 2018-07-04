@@ -48,7 +48,7 @@ public class RestServer {
 	private Server apiServer;
 
 	public boolean startServer() {
-		RoboManager.writeToArea("Default charset: " + Charset.defaultCharset());
+		GuiManager.getinstance().writeLog("Default charset: " + Charset.defaultCharset());
 		
 		ResourceConfig config = new ResourceConfig();
 

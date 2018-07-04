@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.vebqa</groupId>
 	<artifactId>vebtal-manager</artifactId>
-	<version>0.9.1</version>
+	<version>0.9.2</version>
 
 	<name>Manager GUI vebtal system</name>
 	<description>Service provider based gui for vebtal system</description>
@@ -159,7 +159,7 @@
 		<dependency>
 			<groupId>com.github.vebqa</groupId>
 			<artifactId>vebtal-api</artifactId>
-			<version>0.9.1</version>
+			<version>0.9.2</version>
 		</dependency>
 		<!-- Jetty -->
 		<dependency>
