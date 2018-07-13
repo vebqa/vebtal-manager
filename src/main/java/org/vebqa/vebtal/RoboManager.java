@@ -3,16 +3,19 @@ package org.vebqa.vebtal;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
+import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
+import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
+import org.apache.logging.log4j.spi.LoggerContext;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vebqa.vebtal.splash.AppPreloader;
 
 import com.sun.javafx.application.LauncherImpl;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
-import ch.qos.logback.classic.net.SocketAppender;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
@@ -22,7 +25,7 @@ import javafx.stage.Stage;
 @SuppressWarnings("restriction")
 public class RoboManager extends Application {
 
-	public static final org.slf4j.Logger logger = LoggerFactory.getLogger(RoboManager.class);
+	public static final Logger logger = LoggerFactory.getLogger(RoboManager.class);
 	
 	public static final RestServer singleServer = new RestServer();
 
@@ -36,26 +39,24 @@ public class RoboManager extends Application {
 
     @Override
     public void init() throws Exception {
-    	
-//    	LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-//        PatternLayoutEncoder ple = new PatternLayoutEncoder();
-//
-//        ple.setPattern("%date %level [%thread] %logger{10} [%file:%line] %msg%n");
-//        ple.setContext(lc);
-//        ple.start();
-//        
-//        SocketAppender socketAppender = new SocketAppender();
-//    	socketAppender.setPort(4445);
-//    	socketAppender.setName("vebtal-manager");
-//    	socketAppender.setRemoteHost("127.0.0.1");
-//        
-//
-//    	Logger logger = (Logger) LoggerFactory.getLogger(RoboManager.class);
-//        logger.addAppender(socketAppender);
-//        logger.setLevel(Level.DEBUG);
         
+		ConfigurationBuilder<BuiltConfiguration> configBuilder = ConfigurationBuilderFactory.newConfigurationBuilder();
+		
+		configBuilder.setStatusLevel(Level.INFO);
+		configBuilder.setConfigurationName("VEBTALRT");
+
+		// create the appender
+		AppenderComponentBuilder appenderBuilder = configBuilder.newAppender("remoteAppender", "Socket").addAttribute("host", "localhost").addAttribute("port", 4445);
+		configBuilder.add(appenderBuilder);
+		
+		// create a new logger
+		configBuilder.add(configBuilder.newLogger("rtlogger", Level.DEBUG).add(configBuilder.newAppenderRef("remoteAppender")).addAttribute("additivity", false));
+		
+		configBuilder.add(configBuilder.newRootLogger(Level.DEBUG).add(configBuilder.newAppenderRef("remoteAppender")));
+		
+		LoggerContext ctx = Configurator.initialize(configBuilder.build());    	
+    	
         // BorderPane zur Aufnahme der Tabs
-		// BorderPane mainPane = new BorderPane();
 		GuiManager.getinstance().getMainTab().setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
 		// Create help tab
@@ -76,21 +77,19 @@ public class RoboManager extends Application {
 			GuiManager.getinstance().writeLog("No plugins found!");
 		}
 		
-		double p = 10;
 		while (plugins.hasNext()) {
-			p = p + 10;
 			TestAdaptionPlugin robo = plugins.next();
 			LauncherImpl.notifyPreloader(this, new AppPreloader.ActualTaskNotification("Start plugin of type (" + robo.getType() + "): " + robo.getName()));
 			// we will start adapter only at this point
 			if (robo.getType() == TestAdaptionType.ADAPTER) {
 				try {
-					logger.info("Start plugin of type (" + robo.getType() + "): " + robo.getName());
+					// logger.info("Start plugin of type (" + robo.getType() + "): " + robo.getName());
 					GuiManager.getinstance().getMainTab().getTabs().add(robo.startup());
 				} catch (Exception e) {
-					logger.error("Error while starting plugin: " + robo.getName(), e);
+					// logger.error("Error while starting plugin: " + robo.getName(), e);
 				}
 			}
-			Thread.sleep(1000);
+			Thread.sleep(250);
 		}
 		
 		// Start REST Server
@@ -102,6 +101,11 @@ public class RoboManager extends Application {
 		});
 
 		t.start();
+		
+		while (!t.isAlive()) {
+			LauncherImpl.notifyPreloader(this, new AppPreloader.ActualTaskNotification("Wait for service startup completion."));
+			Thread.sleep(50);
+		}
 
     }
     
