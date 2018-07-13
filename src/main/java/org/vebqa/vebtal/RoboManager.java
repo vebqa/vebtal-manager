@@ -8,6 +8,7 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
+import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.slf4j.Logger;
@@ -46,7 +47,9 @@ public class RoboManager extends Application {
 		configBuilder.setConfigurationName("VEBTALRT");
 
 		// create the appender
-		AppenderComponentBuilder appenderBuilder = configBuilder.newAppender("remoteAppender", "Socket").addAttribute("host", "localhost").addAttribute("port", 4445);
+		LayoutComponentBuilder layoutBuilder = configBuilder.newLayout("JsonLayout");
+		
+		AppenderComponentBuilder appenderBuilder = configBuilder.newAppender("remoteAppender", "Socket").addAttribute("host", "localhost").addAttribute("port", 4445).add(layoutBuilder);
 		configBuilder.add(appenderBuilder);
 		
 		// create a new logger
