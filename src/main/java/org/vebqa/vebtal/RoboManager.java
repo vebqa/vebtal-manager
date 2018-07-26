@@ -41,23 +41,23 @@ public class RoboManager extends Application {
     @Override
     public void init() throws Exception {
         
-		ConfigurationBuilder<BuiltConfiguration> configBuilder = ConfigurationBuilderFactory.newConfigurationBuilder();
-		
-		configBuilder.setStatusLevel(Level.INFO);
-		configBuilder.setConfigurationName("VEBTALRT");
-
-		// create the appender
-		LayoutComponentBuilder layoutBuilder = configBuilder.newLayout("JsonLayout");
-		
-		AppenderComponentBuilder appenderBuilder = configBuilder.newAppender("remoteAppender", "Socket").addAttribute("host", "localhost").addAttribute("port", 4445).add(layoutBuilder);
-		configBuilder.add(appenderBuilder);
-		
-		// create a new logger
-		configBuilder.add(configBuilder.newLogger("rtlogger", Level.DEBUG).add(configBuilder.newAppenderRef("remoteAppender")).addAttribute("additivity", false));
-		
-		configBuilder.add(configBuilder.newRootLogger(Level.DEBUG).add(configBuilder.newAppenderRef("remoteAppender")));
-		
-		LoggerContext ctx = Configurator.initialize(configBuilder.build());    	
+//		ConfigurationBuilder<BuiltConfiguration> configBuilder = ConfigurationBuilderFactory.newConfigurationBuilder();
+//		
+//		configBuilder.setStatusLevel(Level.INFO);
+//		configBuilder.setConfigurationName("VEBTALRT");
+//
+//		// create the appender
+//		LayoutComponentBuilder layoutBuilder = configBuilder.newLayout("SerializedLayout");
+//		
+//		AppenderComponentBuilder appenderBuilder = configBuilder.newAppender("remoteAppender", "Socket").addAttribute("host", "localhost").addAttribute("port", 85).add(layoutBuilder);
+//		configBuilder.add(appenderBuilder);
+//		
+//		// create a new logger
+//		configBuilder.add(configBuilder.newLogger("rtlogger", Level.DEBUG).add(configBuilder.newAppenderRef("remoteAppender")).addAttribute("additivity", false));
+//		
+//		configBuilder.add(configBuilder.newRootLogger(Level.DEBUG).add(configBuilder.newAppenderRef("remoteAppender")));
+//		
+//		LoggerContext ctx = Configurator.initialize(configBuilder.build());    	
     	
         // BorderPane zur Aufnahme der Tabs
 		GuiManager.getinstance().getMainTab().setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
