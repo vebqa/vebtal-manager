@@ -336,5 +336,11 @@
 			<version>${version.junit}</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.github.vebqa</groupId>
+			<artifactId>vebtal-imagecompare</artifactId>
+			<version>0.9.0</version>
+		</dependency>
 	</dependencies>
 </project>
