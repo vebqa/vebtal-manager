@@ -74,8 +74,30 @@ public class RoboManager extends Application {
 		/** Logs **/
 		GuiManager.getinstance().getMain().setBottom(GuiManager.getinstance().getLogArea());
 		
-		// Plugins laden und ausfuehren
+		// load plugin configurations
 		Iterator<TestAdaptionPlugin> plugins = ServiceLoader.load(TestAdaptionPlugin.class).iterator();
+		if (!plugins.hasNext()) {
+			GuiManager.getinstance().writeLog("No plugins found!");
+		}
+		
+		while (plugins.hasNext()) {
+			TestAdaptionPlugin robo = plugins.next();
+			LauncherImpl.notifyPreloader(this, new AppPreloader.ActualTaskNotification("Load configuration for plugin: " + robo.getName()));
+			// we will start adapter only at this point
+			if (robo.getType() == TestAdaptionType.ADAPTER) {
+				try {
+					if (robo.getAdaptionID().equalsIgnoreCase("selenese")) {
+						GuiManager.getinstance().getConfig().addConfiguration(robo.loadConfigString());
+					}
+				} catch (Exception e) {
+					// logger.error("Error while starting plugin: " + robo.getName(), e);
+				}
+			}
+			Thread.sleep(250);
+		}		
+		
+		// start tabs for gui system
+		plugins = ServiceLoader.load(TestAdaptionPlugin.class).iterator();
 		if (!plugins.hasNext()) {
 			GuiManager.getinstance().writeLog("No plugins found!");
 		}
