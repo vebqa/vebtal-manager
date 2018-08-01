@@ -3,14 +3,7 @@ package org.vebqa.vebtal;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.core.config.builder.api.AppenderComponentBuilder;
-import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
-import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
-import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
-import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
-import org.apache.logging.log4j.spi.LoggerContext;
+import org.apache.commons.configuration2.CombinedConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vebqa.vebtal.splash.AppPreloader;
@@ -62,11 +55,8 @@ public class RoboManager extends Application {
         // BorderPane zur Aufnahme der Tabs
 		GuiManager.getinstance().getMainTab().setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
-		// Create help tab
-		Tab tabHelp = new Tab();
-		// TODO: I18N
-		tabHelp.setText("Help");
-		GuiManager.getinstance().getMainTab().getTabs().add(tabHelp);
+		// Create config tab
+		GuiManager.getinstance().getMainTab().getTabs().add(GuiManager.getinstance().createConfigTab());
 
 		GuiManager.getinstance().getMain().setCenter(GuiManager.getinstance().getMainTab());
 
@@ -83,18 +73,21 @@ public class RoboManager extends Application {
 		while (plugins.hasNext()) {
 			TestAdaptionPlugin robo = plugins.next();
 			LauncherImpl.notifyPreloader(this, new AppPreloader.ActualTaskNotification("Load configuration for plugin: " + robo.getName()));
-			// we will start adapter only at this point
-			if (robo.getType() == TestAdaptionType.ADAPTER) {
+			// we will load configs from Adapter and extensions
+			if (robo.getType() == TestAdaptionType.ADAPTER || robo.getType() == TestAdaptionType.EXTENSION) {
 				try {
-					if (robo.getAdaptionID().equalsIgnoreCase("selenese")) {
-						GuiManager.getinstance().getConfig().addConfiguration(robo.loadConfigString());
+					CombinedConfiguration tConfig = robo.loadConfig();
+					if (tConfig != null) {
+						GuiManager.getinstance().getConfig().addConfiguration(tConfig);
 					}
 				} catch (Exception e) {
-					// logger.error("Error while starting plugin: " + robo.getName(), e);
+					logger.error("Error while loading config from plugin: {} because of {}", robo.getName(), e.getMessage(), e);
 				}
 			}
-			Thread.sleep(250);
+			Thread.sleep(50);
 		}		
+		
+		GuiManager.getinstance().showConfig();
 		
 		// start tabs for gui system
 		plugins = ServiceLoader.load(TestAdaptionPlugin.class).iterator();
@@ -142,7 +135,10 @@ public class RoboManager extends Application {
 		primaryStage.setTitle("Test Adaption Manager");
 
 		// in stage einfuegen
-		primaryStage.setScene(new Scene(GuiManager.getinstance().getMain(), 1024, 800));
+		// width / height from config
+		double width = GuiManager.getinstance().getConfig().getDouble("manager.width");
+		double height = GuiManager.getinstance().getConfig().getDouble("manager.height");
+		primaryStage.setScene(new Scene(GuiManager.getinstance().getMain(), width, height));
 
 		// Close all -> shutdown all plugins
 		primaryStage.setOnCloseRequest(evt -> {
@@ -184,4 +180,5 @@ public class RoboManager extends Application {
 	public static void addTab(Tab aTab) {
 		GuiManager.getinstance().getMainTab().getTabs().add(aTab);
 	}
+	
 }

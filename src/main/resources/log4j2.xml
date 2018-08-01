@@ -6,7 +6,7 @@
 	</Appenders>
 	<Loggers>
 		<!-- All events from all locations -->
-		<Root level="warn">
+		<Root level="info">
 			<AppenderRef ref="STDOUT" />
 		</Root>
 	</Loggers>
