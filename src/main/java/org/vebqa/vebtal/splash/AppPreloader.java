@@ -17,8 +17,8 @@ public class AppPreloader extends Preloader {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AppPreloader.class);
 	
-    private static final double WIDTH = 400;
-    private static final double HEIGHT = 400;
+    private static final double WIDTH = 512;
+    private static final double HEIGHT = 246;
 
     private Stage preloaderStage;
     private Scene scene;
