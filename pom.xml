@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.vebqa</groupId>
 	<artifactId>vebtal-manager</artifactId>
-	<version>0.9.5</version>
+	<version>0.9.6</version>
 
 	<name>Manager GUI vebtal system</name>
 	<description>Service provider based gui for vebtal system</description>
@@ -15,7 +15,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<version.jersey>2.27</version.jersey>
-		<version.jetty>9.4.8.v20180619</version.jetty>
+		<version.jetty>9.4.11.v20180605</version.jetty>
 		<version.jaxrs>2.1</version.jaxrs>
 		<version.junit>4.12</version.junit>
 	</properties>
