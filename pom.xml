@@ -273,6 +273,7 @@
 	</profiles>
 
 	<dependencies>
+	<!-- api -->
 		<dependency>
 			<groupId>com.github.vebqa</groupId>
 			<artifactId>vebtal-api</artifactId>
