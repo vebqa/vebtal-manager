@@ -2,7 +2,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.github.vebqa</groupId>
+	<parent>
+		<groupId>com.github.vebqa</groupId>
+		<artifactId>vebtal-parent</artifactId>
+		<version>0.9.3</version>
+	</parent>
 	<artifactId>vebtal-manager</artifactId>
 	<version>0.9.6</version>
 
@@ -14,15 +18,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<version.jersey>2.27</version.jersey>
-		<version.jetty>9.4.12.v20180830</version.jetty>
-		<version.junit>4.12</version.junit>
 	</properties>
-
-	<organization>
-		<name>VON ESSEN Bank GmbH</name>
-		<url>https://www.vonessenbank.de</url>
-	</organization>
 
 	<licenses>
 		<license>
@@ -43,237 +39,8 @@
 		</developer>
 	</developers>
 
-	<build>
-		<sourceDirectory>src/main/java</sourceDirectory>
-		<testSourceDirectory>src/test/java</testSourceDirectory>
-		<plugins>
-			<!-- compile -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.0</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>3.0.1</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar-no-fork</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.0.1</version>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>eu.somatik.serviceloader-maven-plugin</groupId>
-				<artifactId>serviceloader-maven-plugin</artifactId>
-				<version>1.1.0</version>
-				<configuration>
-					<services>
-						<param>org.vebqa.vebtal.TestAdaptionPlugin</param>
-					</services>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>			
-			<!-- static code analysis -->
-			<plugin>
-				<groupId>org.sonarsource.scanner.maven</groupId>
-				<artifactId>sonar-maven-plugin</artifactId>
-				<version>3.4.1.1168</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jdeps-plugin</artifactId>
-				<version>3.1.1</version>
-			</plugin>
-			<!-- unit testing -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.22.0</version>
-				<configuration>
-					<skipTests>${skip.unit.tests}</skipTests>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
-	<profiles>
-		<profile>
-			<id>documentation</id>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-site-plugin</artifactId>
-						<version>3.7.1</version>
-					</plugin>
-				</plugins>
-			</build>
-			<reporting>
-				<plugins>
-					<plugin>
-						<groupId>com.soebes.maven.plugins</groupId>
-						<artifactId>doxygen-maven-plugin</artifactId>
-						<version>1.1.0</version>
-						<configuration>
-							<workingDirectory>${basedir}</workingDirectory>
-							<executable>${doxygen.executable.path}</executable>
-							<haveDot>true</haveDot>
-							<dotCleanup>true</dotCleanup>
-							<extractAll>true</extractAll>
-							<umlLook>true</umlLook>
-							<callGraph>true</callGraph>
-							<callerGraph>true</callerGraph>
-							<dotPath>${dot.executable.path}</dotPath>
-							<quiet>false</quiet>
-							<filePatterns>*.java</filePatterns>
-							<configurationFile>./doxygen.config</configurationFile>
-							<input>${doxygenInput}</input>
-							<recursive>true</recursive>
-						</configuration>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-changes-plugin</artifactId>
-						<version>2.12.1</version>
-						<reportSets>
-							<reportSet>
-								<reports>
-									<report>changes-report</report>
-								</reports>
-							</reportSet>
-						</reportSets>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-dependency-plugin</artifactId>
-						<version>3.1.1</version>
-						<reportSets>
-							<reportSet>
-								<reports>
-									<report>analyze-report</report>
-								</reports>
-							</reportSet>
-						</reportSets>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-pmd-plugin</artifactId>
-						<version>3.10.0</version>
-						<configuration>
-							<skipEmptyReport>false</skipEmptyReport>
-							<includeTests>true</includeTests>
-						</configuration>
-						<reportSets>
-							<reportSet>
-								<reports>
-									<report>cpd</report>
-									<report>pmd</report>
-								</reports>
-							</reportSet>
-						</reportSets>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-project-info-reports-plugin</artifactId>
-						<version>3.0.0</version>
-						<configuration>
-							<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-						</configuration>
-						<reportSets>
-							<reportSet>
-								<reports>
-									<report>index</report>
-									<report>summary</report>
-									<report>modules</report>
-									<report>license</report>
-									<report>project-team</report>
-									<report>scm</report>
-									<report>issue-tracking</report>
-									<report>dependency-management</report>
-									<report>dependencies</report>
-									<report>dependency-convergence</report>
-									<report>plugin-management</report>
-									<report>plugins</report>
-								</reports>
-							</reportSet>
-						</reportSets>
-					</plugin>
-				</plugins>
-			</reporting>
-		</profile>
-		<profile>
-			<id>release</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.6</version>
-						<executions>
-							<execution>
-								<id>sign-artifacts</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.sonatype.plugins</groupId>
-						<artifactId>nexus-staging-maven-plugin</artifactId>
-						<version>1.6.8</version>
-						<extensions>true</extensions>
-						<configuration>
-							<serverId>ossrh</serverId>
-							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-							<autoReleaseAfterClose>true</autoReleaseAfterClose>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-			<distributionManagement>
-				<snapshotRepository>
-					<id>ossrh</id>
-					<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-				</snapshotRepository>
-				<repository>
-					<id>ossrh</id>
-					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/
-				</url>
-				</repository>
-			</distributionManagement>
-		</profile>
-	</profiles>
-
 	<dependencies>
-	<!-- api -->
+		<!-- api -->
 		<dependency>
 			<groupId>com.github.vebqa</groupId>
 			<artifactId>vebtal-api</artifactId>
