@@ -1,5 +1,7 @@
 package org.vebqa.vebtal.splash;
 
+import java.io.FileInputStream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,17 +10,19 @@ import javafx.application.Preloader;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
-@SuppressWarnings("restriction")
 public class AppPreloader extends Preloader {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AppPreloader.class);
 	
     private static final double WIDTH = 512;
-    private static final double HEIGHT = 246;
+    private static final double HEIGHT = 384;
 
     private Stage preloaderStage;
     private Scene scene;
@@ -31,15 +35,22 @@ public class AppPreloader extends Preloader {
     @Override
     public void init() throws Exception {
 
+    	Image image = new Image("/splash/splash001.png");
+    	final ImageView imageView = new ImageView(image);
+    	
         Platform.runLater(() -> {
             Label title = new Label("Starting VEBTAL Manager!\nLoading, please wait...");
             title.setTextAlignment(TextAlignment.CENTER);
             progress = new Label("0%");
 
+            HBox hbox = new HBox(imageView);
+            
             VBox root = new VBox(title, progress);
             root.setAlignment(Pos.CENTER);
+            
+            
 
-            scene = new Scene(root, WIDTH, HEIGHT);
+            scene = new Scene(hbox, WIDTH, HEIGHT);
         });
     }
 

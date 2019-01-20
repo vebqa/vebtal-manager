@@ -5,10 +5,10 @@
 	<parent>
 		<groupId>com.github.vebqa</groupId>
 		<artifactId>vebtal-parent</artifactId>
-		<version>0.9.5</version>
+		<version>0.9.6</version>
 	</parent>
 	<artifactId>vebtal-manager</artifactId>
-	<version>0.9.10</version>
+	<version>0.9.11</version>
 
 	<name>Manager GUI vebtal system</name>
 	<description>Service provider based gui for vebtal system</description>
@@ -45,7 +45,7 @@
 		<dependency>
 			<groupId>com.github.vebqa</groupId>
 			<artifactId>vebtal-api</artifactId>
-			<version>0.9.8</version>
+			<version>0.9.9</version>
 		</dependency>
 		<!-- Jetty -->
 		<dependency>

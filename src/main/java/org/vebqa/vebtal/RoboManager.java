@@ -16,7 +16,6 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 
-@SuppressWarnings("restriction")
 public class RoboManager extends Application {
 
 	public static final Logger logger = LoggerFactory.getLogger(RoboManager.class);
