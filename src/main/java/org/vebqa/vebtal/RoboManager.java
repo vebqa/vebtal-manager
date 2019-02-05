@@ -19,20 +19,20 @@ import javafx.stage.Stage;
 public class RoboManager extends Application {
 
 	public static final Logger logger = LoggerFactory.getLogger(RoboManager.class);
-	
+
 	public static final RestServer singleServer = new RestServer();
 
-    public RoboManager() {
-    	// standard constructor
+	public RoboManager() {
+		// standard constructor
 	}
-    
+
 	public static void main(String[] args) {
 		LauncherImpl.launchApplication(RoboManager.class, AppPreloader.class, args);
 	}
 
-    @Override
-    public void init() throws Exception {
-        
+	@Override
+	public void init() throws Exception {
+
 //		ConfigurationBuilder<BuiltConfiguration> configBuilder = ConfigurationBuilderFactory.newConfigurationBuilder();
 //		
 //		configBuilder.setStatusLevel(Level.INFO);
@@ -50,8 +50,8 @@ public class RoboManager extends Application {
 //		configBuilder.add(configBuilder.newRootLogger(Level.DEBUG).add(configBuilder.newAppenderRef("remoteAppender")));
 //		
 //		LoggerContext ctx = Configurator.initialize(configBuilder.build());    	
-    	
-        // BorderPane zur Aufnahme der Tabs
+
+		// BorderPane zur Aufnahme der Tabs
 		GuiManager.getinstance().getMainTab().setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
 		// Create config tab
@@ -62,16 +62,17 @@ public class RoboManager extends Application {
 		// Log Area
 		/** Logs **/
 		GuiManager.getinstance().getMain().setBottom(GuiManager.getinstance().getLogArea());
-		
+
 		// load plugin configurations
 		Iterator<TestAdaptionPlugin> plugins = ServiceLoader.load(TestAdaptionPlugin.class).iterator();
 		if (!plugins.hasNext()) {
 			GuiManager.getinstance().writeLog("No plugins found!");
 		}
-		
+
 		while (plugins.hasNext()) {
 			TestAdaptionPlugin robo = plugins.next();
-			LauncherImpl.notifyPreloader(this, new AppPreloader.ActualTaskNotification("Load configuration for plugin: " + robo.getName()));
+			LauncherImpl.notifyPreloader(this,
+					new AppPreloader.ActualTaskNotification("Load configuration for plugin: " + robo.getName()));
 			// we will load configs from Adapter and extensions
 			if (robo.getType() == TestAdaptionType.ADAPTER || robo.getType() == TestAdaptionType.EXTENSION) {
 				try {
@@ -80,27 +81,34 @@ public class RoboManager extends Application {
 						GuiManager.getinstance().getConfig().addConfiguration(tConfig);
 					}
 				} catch (Exception e) {
-					logger.error("Error while loading config from plugin: {} because of {}", robo.getName(), e.getMessage(), e);
+					logger.error("Error while loading config from plugin: {} because of {}", robo.getName(),
+							e.getMessage(), e);
 				}
 			}
 			Thread.sleep(50);
-		}		
-		
+		}
+
 		GuiManager.getinstance().showConfig();
-		
+
 		// start tabs for gui system
 		plugins = ServiceLoader.load(TestAdaptionPlugin.class).iterator();
 		if (!plugins.hasNext()) {
 			GuiManager.getinstance().writeLog("No plugins found!");
 		}
-		
+
+		// After loading plugins, scan classpath for custom keywords. Keyword storage is
+		// needed in plugin-startup methods
+		KeywordFinder.getinstance().scan();
+
 		while (plugins.hasNext()) {
 			TestAdaptionPlugin robo = plugins.next();
-			LauncherImpl.notifyPreloader(this, new AppPreloader.ActualTaskNotification("Start plugin of type (" + robo.getType() + "): " + robo.getName()));
+			LauncherImpl.notifyPreloader(this, new AppPreloader.ActualTaskNotification(
+					"Start plugin of type (" + robo.getType() + "): " + robo.getName()));
 			// we will start adapter only at this point
 			if (robo.getType() == TestAdaptionType.ADAPTER) {
 				try {
-					// logger.info("Start plugin of type (" + robo.getType() + "): " + robo.getName());
+					// logger.info("Start plugin of type (" + robo.getType() + "): " +
+					// robo.getName());
 					GuiManager.getinstance().getMainTab().getTabs().add(robo.startup());
 				} catch (Exception e) {
 					// logger.error("Error while starting plugin: " + robo.getName(), e);
@@ -108,7 +116,7 @@ public class RoboManager extends Application {
 			}
 			Thread.sleep(250);
 		}
-		
+
 		// Start REST Server
 		Thread t = new Thread(new Runnable() {
 
@@ -118,17 +126,18 @@ public class RoboManager extends Application {
 		});
 
 		t.start();
-		
+
 		while (!t.isAlive()) {
-			LauncherImpl.notifyPreloader(this, new AppPreloader.ActualTaskNotification("Wait for service startup completion."));
+			LauncherImpl.notifyPreloader(this,
+					new AppPreloader.ActualTaskNotification("Wait for service startup completion."));
 			Thread.sleep(50);
 		}
 
-    }
-    
+	}
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		
+
 		// application title
 		// TODO: I18N
 		primaryStage.setTitle("Test Adaption Manager");
@@ -171,7 +180,7 @@ public class RoboManager extends Application {
 		} catch (Exception e) {
 			// logger.error("Error while stopping application.", e);
 		}
-		
+
 		// close this...
 		mainWindow.close();
 	}
@@ -179,5 +188,5 @@ public class RoboManager extends Application {
 	public static void addTab(Tab aTab) {
 		GuiManager.getinstance().getMainTab().getTabs().add(aTab);
 	}
-	
+
 }
