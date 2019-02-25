@@ -16,6 +16,7 @@ public class ManagerTestAdaptionPlugin extends AbstractTestAdaptionPlugin {
 	
 	@Override
 	public Class<?> getImplementation() {
+		logger.debug("no implementation yet");
 		return null;
 	}
 	

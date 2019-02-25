@@ -111,7 +111,7 @@ public class RoboManager extends Application {
 					// robo.getName());
 					GuiManager.getinstance().getMainTab().getTabs().add(robo.startup());
 				} catch (Exception e) {
-					// logger.error("Error while starting plugin: " + robo.getName(), e);
+					logger.error("Error while starting plugin: " + robo.getName(), e);
 				}
 			}
 			Thread.sleep(250);
@@ -171,14 +171,14 @@ public class RoboManager extends Application {
 			try {
 				robo.shutdown();
 			} catch (Exception e) {
-				// logger.error("Error while starting plugin: " + robo.getName(), e);
+				logger.error("Error while starting plugin: " + robo.getName(), e);
 			}
 		}
 		RoboManager.singleServer.shutdownServer();
 		try {
 			stop();
 		} catch (Exception e) {
-			// logger.error("Error while stopping application.", e);
+			logger.error("Error while stopping application.", e);
 		}
 
 		// close this...
@@ -188,5 +188,4 @@ public class RoboManager extends Application {
 	public static void addTab(Tab aTab) {
 		GuiManager.getinstance().getMainTab().getTabs().add(aTab);
 	}
-
 }

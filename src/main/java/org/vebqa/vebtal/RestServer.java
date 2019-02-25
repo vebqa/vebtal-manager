@@ -57,7 +57,7 @@ public class RestServer {
 		while (plugins.hasNext()) {
 			final TestAdaptionPlugin robo = plugins.next();
 			// register old-style adapter
-			if ((robo.getType() == TestAdaptionType.ADAPTER) && (robo.getImplementation() != null)) {
+			if (robo.getType() == TestAdaptionType.ADAPTER && robo.getImplementation() != null) {
 				logger.info("register old style: " + robo.getName());
 				try {
 					config.register(robo.getImplementation());
@@ -66,7 +66,7 @@ public class RestServer {
 				} catch (NoSuchMethodError e) {
 					logger.error("Error while starting plugin: " + robo.getName(), e);
 				}
-			} else if ((robo.getType() == TestAdaptionType.ADAPTER) && (robo.getImplementation() == null)) {
+			} else if (robo.getType() == TestAdaptionType.ADAPTER && robo.getImplementation() == null) {
 				logger.info("register new style: " + robo.getName());
 
 				// register new-style adapter
@@ -152,13 +152,10 @@ public class RestServer {
 		context.setErrorHandler(new ErrorHandler());
 
 		try {
-
 			apiServer.start();
 			apiServer.join();
 		} catch (Exception e) {
 			logger.error("Error starting server.", e);
-		} finally {
-			// apiServer.destroy();
 		}
 
 		return true;

@@ -1,7 +1,5 @@
 package org.vebqa.vebtal.splash;
 
-import java.io.FileInputStream;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
