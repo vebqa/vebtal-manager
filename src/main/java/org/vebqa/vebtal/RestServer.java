@@ -129,6 +129,8 @@ public class RestServer {
 									logger.error("IllegalArgumentException!", e);
 								} catch (InvocationTargetException e) {
 									logger.error("There is an exception in the invoked object: ", e.getCause());
+								} catch (NullPointerException e) {
+									logger.error("I am struggling of nullpointer!", e);
 								}
 
 								return result;
