@@ -45,8 +45,14 @@ public class RestServer {
 
 	private static final Logger logger = LoggerFactory.getLogger(RestServer.class);
 
+	private int port = 84;
+	
 	private Server apiServer;
 
+	public void setPort(int aPort) {
+		this.port = aPort;
+	}
+	
 	public boolean startServer() {
 		GuiManager.getinstance().writeLog("Default charset: " + Charset.defaultCharset());
 		
@@ -148,7 +154,7 @@ public class RestServer {
 
 		ServletHolder servlet = new ServletHolder(new ServletContainer(config));
 
-		apiServer = new Server(84);
+		apiServer = new Server(this.port);
 		ServletContextHandler context = new ServletContextHandler(apiServer, "/*");
 		context.addServlet(servlet, "/*");
 		context.setErrorHandler(new ErrorHandler());

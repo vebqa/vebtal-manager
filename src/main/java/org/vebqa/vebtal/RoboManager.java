@@ -1,6 +1,9 @@
 package org.vebqa.vebtal;
 
+import java.nio.charset.Charset;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.ServiceLoader;
 
 import org.apache.commons.configuration2.CombinedConfiguration;
@@ -117,10 +120,34 @@ public class RoboManager extends Application {
 			Thread.sleep(250);
 		}
 
+		// decide which port to use, if not set via cli, use setting from config
+		Parameters parameters = getParameters();
+		Map<String, String> namedArguments = parameters.getNamed();
+
+		// we can process the following keys:
+		// --port
+		int port = 0; // default, not used
+		for (Map.Entry<String, String> entry : namedArguments.entrySet()) {
+			System.out.println("found cli key " + entry.getKey());
+			switch (entry.getKey()) {
+			case "port":
+				port = Integer.parseInt(entry.getValue());
+				break;
+			default : logger.info("option not processed: {}", entry.getKey());
+			}
+		}
+		
+		if (port == 0) {
+			port = GuiManager.getinstance().getConfig().getInt("server.port", 84);
+		}
+
+		final int usePort = port;
+		
 		// Start REST Server
 		Thread t = new Thread(new Runnable() {
 
 			public void run() {
+				singleServer.setPort(usePort);
 				singleServer.startServer();
 			}
 		});
@@ -133,6 +160,7 @@ public class RoboManager extends Application {
 			Thread.sleep(50);
 		}
 
+		GuiManager.getinstance().writeLog("Server listening on port: " + usePort);
 	}
 
 	@Override
