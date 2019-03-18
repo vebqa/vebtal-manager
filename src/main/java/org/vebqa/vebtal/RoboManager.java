@@ -136,10 +136,12 @@ public class RoboManager extends Application {
 		}
 		
 		if (port == 0) {
-			port = GuiManager.getinstance().getConfig().getInt("server.port", 84);
+			port = GuiManager.getinstance().getConfig().getInt("server.port", 0);
 		}
 
 		final int usePort = port;
+		
+		if (port > 0) {
 		
 		// Start REST Server
 		Thread t = new Thread(new Runnable() {
@@ -159,6 +161,9 @@ public class RoboManager extends Application {
 		}
 
 		GuiManager.getinstance().writeLog("Server listening on port: " + usePort);
+		} else {
+			GuiManager.getinstance().writeLog("No REST server started!");
+		}
 	}
 
 	@Override

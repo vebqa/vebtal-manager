@@ -186,6 +186,10 @@ public class RestServer {
 	}
 
 	public boolean shutdownServer() {
+		if (apiServer == null) {
+			logger.info("No rest server available!");
+			return true;
+		}
 		if (apiServer.isStopped()) {
 			logger.info("rest server already stopped.");
 			return true;
