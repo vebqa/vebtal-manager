@@ -6,6 +6,12 @@
 		<author email="kdoerges@googlemail.com">Karsten Doerges</author>
 	</properties>
 	<body>
+			<release version="1.0.0" date=""
+			description="maintenance">
+			<action dev="kdoerges" type="update">
+				update jackson-databind
+			</action>
+		</release>	
 		<release version="1.0.0" date="2019-05.08"
 			description="switch to 1.0.0">
 			<action dev="kdoerges" type="update">
