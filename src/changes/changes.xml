@@ -6,18 +6,25 @@
 		<author email="kdoerges@googlemail.com">Karsten Doerges</author>
 	</properties>
 	<body>
-			<release version="1.0.0" date=""
-			description="maintenance">
+		<release version="1.01" date="" description="maintenance">
+			<action dev="kdoerges" type="update">
+				update vebtal-parent 1.0.1
+			</action>		
+			<action dev="kdoerges" type="update">
+				update jackson-databind 2.9.9.1
+			</action>
+		</release>
+		<release version="1.0.0" date="" description="maintenance">
 			<action dev="kdoerges" type="update">
 				update jackson-databind
 			</action>
-		</release>	
+		</release>
 		<release version="1.0.0" date="2019-05.08"
 			description="switch to 1.0.0">
 			<action dev="kdoerges" type="update">
 				update to parent 1.0.0
 			</action>
-		</release>	
+		</release>
 		<release version="0.9.14" date="2019-03.19" description="">
 		</release>
 		<release version="0.9.13" date="2019-02.28" description="">
