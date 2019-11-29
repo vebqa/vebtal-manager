@@ -37,7 +37,7 @@ public class AppPreloader extends Preloader {
     	final ImageView imageView = new ImageView(image);
     	
         Platform.runLater(() -> {
-            Label title = new Label("Starting VEBTAL Manager!\nLoading, please wait...");
+            Label title = new Label("Starting openTAL Manager!\nLoading, please wait...");
             title.setTextAlignment(TextAlignment.CENTER);
             progress = new Label("0%");
 
