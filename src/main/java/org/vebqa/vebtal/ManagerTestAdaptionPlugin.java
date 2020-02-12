@@ -27,7 +27,7 @@ public class ManagerTestAdaptionPlugin extends AbstractTestAdaptionPlugin {
 	
 	@Override
 	public String getName() {
-		return "VEBTAL Manager Plugin";
+		return "OpenTAL Manager Plugin";
 	}
 
 	/**

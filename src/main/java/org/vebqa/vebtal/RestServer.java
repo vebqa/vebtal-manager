@@ -108,12 +108,26 @@ public class RestServer {
 								String tFirst = tClassname.substring(0, 1).toUpperCase();
 								String tRest = tClassname.substring(1);
 								tClassname = tFirst + tRest;
-								String tClass = "org.vebqa.vebtal." + robo.getAdaptionID() + "restserver." + tClassname
-										+ "Resource";
-								logger.info("call handler class: " + tClass);
+								
+								String tAdapterRoot = GuiManager.getinstance().getConfig().getString("adapter." + robo.getAdaptionID() + ".root");
+								String tAdapterClass = tAdapterRoot + "." + tClassname;
+								
+								Class<?> cmdClass = null;
+								try {
+									cmdClass = Class.forName(tAdapterClass);
+								} catch (ClassNotFoundException e1) {
+									// default class not found, use legacy
+									tAdapterClass = "org.vebqa.vebtal." + robo.getAdaptionID() + "restserver." + tClassname + "Resource";
+									try {
+										cmdClass = Class.forName(tAdapterClass);
+									} catch (ClassNotFoundException e2) {
+										logger.error("Adapter class not found: " + tAdapterClass);
+									}
+								}
+								
+								logger.info("call handler class: " + tAdapterClass);
 								Response result = null;
 								try {
-									Class<?> cmdClass = Class.forName(tClass);
 									TestAdaptionResource cmdObj = (TestAdaptionResource)cmdClass.newInstance();
 
 									Class[] argTypes = new Class[] { Command.class };
@@ -121,8 +135,6 @@ public class RestServer {
 
 									result = (Response) m.invoke(cmdObj, cmd);
 
-								} catch (ClassNotFoundException e) {
-									logger.error("Keyword class not found: " + tClass, e);
 								} catch (NoSuchMethodException e) {
 									logger.error("Method not found!", e);
 								} catch (SecurityException e) {

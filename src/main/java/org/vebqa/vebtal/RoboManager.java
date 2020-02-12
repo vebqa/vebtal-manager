@@ -76,6 +76,7 @@ public class RoboManager extends Application {
 					new AppPreloader.ActualTaskNotification("Load configuration for plugin: " + robo.getName()));
 			// we will load configs from Adapter and extensions
 			if (robo.getType() == TestAdaptionType.ADAPTER || robo.getType() == TestAdaptionType.EXTENSION) {
+				GuiManager.getinstance().getConfig().addProperty("adapter." + robo.getAdaptionID() + ".root", robo.getClass().getPackage() + "." + robo.getAdaptionID());
 				try {
 					CombinedConfiguration tConfig = robo.loadConfig();
 					if (tConfig != null) {
@@ -126,7 +127,7 @@ public class RoboManager extends Application {
 		// --port
 		int port = 0; // default, not used
 		for (Map.Entry<String, String> entry : namedArguments.entrySet()) {
-			System.out.println("found cli key " + entry.getKey());
+			logger.info("found cli key " + entry.getKey());
 			switch (entry.getKey()) {
 			case "port":
 				port = Integer.parseInt(entry.getValue());
