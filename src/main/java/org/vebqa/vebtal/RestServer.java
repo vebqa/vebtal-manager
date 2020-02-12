@@ -110,7 +110,7 @@ public class RestServer {
 								tClassname = tFirst + tRest;
 								
 								String tAdapterRoot = GuiManager.getinstance().getConfig().getString("adapter." + robo.getAdaptionID() + ".root");
-								String tAdapterClass = tAdapterRoot + "." + tClassname;
+								String tAdapterClass = tAdapterRoot + "." + tClassname + "Resource";
 								
 								Class<?> cmdClass = null;
 								try {
