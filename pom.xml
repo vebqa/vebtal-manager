@@ -8,7 +8,7 @@
 		<version>1.0.3.1</version>
 	</parent>
 	<artifactId>vebtal-manager</artifactId>
-	<version>1.0.3.1</version>
+	<version>1.0.4-SNAPSHOT</version>
 
 	<name>Manager GUI vebtal system</name>
 	<description>Service provider based gui for vebtal system</description>

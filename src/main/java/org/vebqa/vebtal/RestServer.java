@@ -19,6 +19,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ErrorPageErrorHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -166,7 +167,12 @@ public class RestServer {
 
 		ServletHolder servlet = new ServletHolder(new ServletContainer(config));
 
-		apiServer = new Server(this.port);
+		apiServer = new Server();
+		ServerConnector connector = new ServerConnector(apiServer);
+		connector.setPort(this.port);
+		connector.setHost(GuiManager.getinstance().getConfig().getString("server.host", "127.0.0.1"));
+		apiServer.addConnector(connector);
+		
 		ServletContextHandler context = new ServletContextHandler(apiServer, "/*");
 		context.addServlet(servlet, "/*");
 		context.setErrorHandler(new ErrorHandler());

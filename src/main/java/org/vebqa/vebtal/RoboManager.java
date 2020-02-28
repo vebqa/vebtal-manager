@@ -1,5 +1,6 @@
 package org.vebqa.vebtal;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -70,13 +71,19 @@ public class RoboManager extends Application {
 			GuiManager.getinstance().writeLog("No plugins found!");
 		}
 
+		// save all keyword packages here
+		ArrayList<String> tCommandPackages = new ArrayList<String>();
+		
 		while (plugins.hasNext()) {
 			TestAdaptionPlugin robo = plugins.next();
 			LauncherImpl.notifyPreloader(this,
 					new AppPreloader.ActualTaskNotification("Load configuration for plugin: " + robo.getName()));
 			// we will load configs from Adapter and extensions
 			if (robo.getType() == TestAdaptionType.ADAPTER || robo.getType() == TestAdaptionType.EXTENSION) {
-				GuiManager.getinstance().getConfig().addProperty("adapter." + robo.getAdaptionID() + ".root", robo.getClass().getPackage() + "." + robo.getAdaptionID());
+				CombinedConfiguration tCfgAdapter = new CombinedConfiguration();
+				tCfgAdapter.addProperty("adapter." + robo.getAdaptionID() + ".root", robo.getClass().getPackage().getName());
+				GuiManager.getinstance().getConfig().addConfiguration(tCfgAdapter);
+				
 				try {
 					CombinedConfiguration tConfig = robo.loadConfig();
 					if (tConfig != null) {
@@ -90,6 +97,10 @@ public class RoboManager extends Application {
 			Thread.sleep(50);
 		}
 
+		// store all possible command packages
+		GuiManager.getinstance().getConfig().addProperty("cmdPackages", tCommandPackages);
+		
+		// show actual config
 		GuiManager.getinstance().showConfig();
 
 		// start tabs for gui system
