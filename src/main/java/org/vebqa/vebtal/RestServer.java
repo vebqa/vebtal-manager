@@ -46,6 +46,8 @@ public class RestServer {
 
 	private static final Logger logger = LoggerFactory.getLogger(RestServer.class);
 
+	private static final String LOCALHOST = "127.0.0.1";
+	
 	private int port = 84;
 	
 	private Server apiServer;
@@ -170,7 +172,7 @@ public class RestServer {
 		apiServer = new Server();
 		ServerConnector connector = new ServerConnector(apiServer);
 		connector.setPort(this.port);
-		connector.setHost(GuiManager.getinstance().getConfig().getString("server.host", "127.0.0.1"));
+		connector.setHost(GuiManager.getinstance().getConfig().getString("server.host", LOCALHOST));
 		apiServer.addConnector(connector);
 		
 		ServletContextHandler context = new ServletContextHandler(apiServer, "/*");

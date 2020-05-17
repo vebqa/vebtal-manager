@@ -2,11 +2,19 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
 	<properties>
-		<title>VEBTAL MANAGER - Test Adaption Layer</title>
+		<title>OpenTAL Manager - Test Adaption Layer</title>
 		<author email="kdoerges@googlemail.com">Karsten Doerges</author>
 	</properties>
 	<body>
-		<release version="1.0.4-SNAPSHOT" date="2020-02.28" description="maintenance">
+		<release version="1.0.5" date="2020-05.17" description="maintenance">
+			<action dev="kdoerges" type="fix">
+				fix pmd issues
+			</action>
+			<action dev="kdoerges" type="update">
+				update vebtal-parent 1.0.5, jackson-databind 2.11.0
+			</action>		
+		</release>
+		<release version="1.0.4" date="2020-02.28" description="maintenance">
 			<action dev="kdoerges" type="add">
 				make server host configurable by key: server.host
 			</action>
