@@ -6,37 +6,53 @@
 		<author email="kdoerges@googlemail.com">Karsten Doerges</author>
 	</properties>
 	<body>
-		<release version="1.0.5" date="2020-05.17" description="maintenance">
+		<release version="1.0.6" date="2020-05.17"
+			description="maintenance">
+			<action dev="kdoerges" type="fix">
+				remove log4j, slf4j-only
+			</action>
+			<action dev="kdoerges" type="update">
+				update jackson-databind 2.11.1
+			</action>
+		</release>
+		<release version="1.0.5" date="2020-05.17"
+			description="maintenance">
 			<action dev="kdoerges" type="fix">
 				fix pmd issues
 			</action>
 			<action dev="kdoerges" type="update">
-				update vebtal-parent 1.0.5, jackson-databind 2.11.0
-			</action>		
+				update vebtal-parent 1.0.5,
+				jackson-databind 2.11.0
+			</action>
 		</release>
-		<release version="1.0.4" date="2020-02.28" description="maintenance">
+		<release version="1.0.4" date="2020-02.28"
+			description="maintenance">
 			<action dev="kdoerges" type="add">
-				make server host configurable by key: server.host
+				make server host configurable by
+				key: server.host
 			</action>
 			<action dev="kdoerges" type="update">
 				update vebtal-parent 1.0.4
-			</action>		
+			</action>
 			<action dev="kdoerges" type="add">
-				add root path of plugins automatically to configuration by runtime
+				add root path of plugins
+				automatically to configuration by runtime
 			</action>
 		</release>
-		<release version="1.0.3" date="2019-12.04" description="maintenance">
+		<release version="1.0.3" date="2019-12.04"
+			description="maintenance">
 			<action dev="kdoerges" type="update">
 				update vebtal-parent 1.0.3
-			</action>		
+			</action>
 			<action dev="kdoerges" type="update">
 				update jackson-databind 2.10.1
 			</action>
 		</release>
-		<release version="1.0.2" date="2019-10.08" description="maintenance">
+		<release version="1.0.2" date="2019-10.08"
+			description="maintenance">
 			<action dev="kdoerges" type="update">
 				update vebtal-parent 1.0.2
-			</action>		
+			</action>
 			<action dev="kdoerges" type="update">
 				update jackson-databind 2.10.0
 			</action>
@@ -44,7 +60,7 @@
 		<release version="1.0.1" date="" description="maintenance">
 			<action dev="kdoerges" type="update">
 				update vebtal-parent 1.0.1
-			</action>		
+			</action>
 			<action dev="kdoerges" type="update">
 				update jackson-databind 2.9.9.1
 			</action>
